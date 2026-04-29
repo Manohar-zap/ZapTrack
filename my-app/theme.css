@@ -1,0 +1,149 @@
+/* ────────────────────────────────────────────────────────────────
+   Theme definitions (CSS custom properties)
+   ──────────────────────────────────────────────────────────────── */
+
+/* -------------------------------------------------
+   Default – Dark “Midnight” theme (purple → blue)
+   ------------------------------------------------- */
+:root {
+  /* Core background / surface */
+  --color-bg: #0f0f10; /* page background */
+  --color-surface: rgba(255, 255, 255, 0.04); /* cards */
+  --color-surface-dark: rgba(255, 255, 255, 0.08); /* borders */
+
+  /* Text */
+  --color-text-primary: #e5e5e5;
+  --color-text-muted: #a1a1aa;
+  --color-text-inverse: #111827; /* for dark cards if you ever need them */
+
+  /* Primary accent (purple → blue) */
+  --color-primary: #6366f1; /* main accent */
+  --color-primary-dark: #4f46e5; /* hovered / pressed state */
+  --color-primary-light: #a5b4fc; /* subtle highlights */
+
+  /* Semantic colours */
+  --color-success: #10b981; /* safe / good */
+  --color-warning: #f59e0b; /* caution */
+  --color-danger: #ef4444; /* error / critical */
+
+  /* Gradient for the progress bar (purple → blue) */
+  --gradient-start: #a855f7; /* from */
+  --gradient-end: #3b82f6; /* to   */
+
+  /* Misc UI elements */
+  --color-card-hover: rgba(255, 255, 255, 0.03);
+}
+
+/* -------------------------------------------------
+   Mint – cool teal / cyan palette
+   ------------------------------------------------- */
+[data-theme='mint'] {
+  --color-bg: #0a0f0f;
+  --color-primary: #0d9488; /* teal‑600 */
+  --color-primary-dark: #0f766e; /* teal‑700 */
+  --color-primary-light: #5eead4; /* teal‑300 */
+  --gradient-start: #06b6d4; /* cyan‑500 */
+  --gradient-end: #3b82f6; /* blue‑500 (keeps the bar visible) */
+}
+
+/* -------------------------------------------------
+   Sunset – warm orange / red palette
+   ------------------------------------------------- */
+[data-theme='sunset'] {
+  --color-bg: #140c0a;
+  --color-primary: #ea580c; /* orange‑600 */
+  --color-primary-dark: #c2410c; /* orange‑700 */
+  --color-primary-light: #fdba74; /* orange‑300 */
+  --gradient-start: #fb923c; /* orange‑400 */
+  --gradient-end: #f43f5e; /* rose‑500 */
+}
+
+/* -------------------------------------------------
+   Light – soft, high‑contrast (optional)
+   ------------------------------------------------- */
+[data-theme='light'] {
+  --color-bg: #f3f4f6;
+  --color-surface: rgba(0, 0, 0, 0.04);
+  --color-surface-dark: rgba(0, 0, 0, 0.08);
+  --color-text-primary: #111827;
+  --color-text-muted: #4b5563;
+  --color-primary: #6366f1; /* keep the same purple */
+  --color-primary-dark: #4f46e5;
+  --color-primary-light: #a5b4fc;
+  --gradient-start: #a855f7;
+  --gradient-end: #3b82f6;
+}
+
+/* -------------------------------------------------
+   UI helpers – apply the variables to the components you already have
+   ------------------------------------------------- */
+
+/* Page background + default text colour */
+body {
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+}
+
+/* Card surface */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-surface-dark);
+}
+
+/* Hover effect for cards (used in the previous CSS) */
+.card:hover {
+  background: var(--color-card-hover);
+}
+
+/* Status badge */
+#status {
+  font-weight: 500;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  padding: 0.125rem 0.75rem;
+}
+#status.safe {
+  background: var(--color-success);
+  color: #fff;
+}
+#status.warn {
+  background: var(--color-warning);
+  color: #fff;
+}
+#status.danger {
+  background: var(--color-danger);
+  color: #fff;
+}
+
+/* Primary button style (any button you want to colour with the accent) */
+.btn-primary {
+  background: var(--color-primary);
+  color: #fff;
+}
+.btn-primary:hover {
+  background: var(--color-primary-dark);
+}
+
+/* Gradient progress bar (the inner bar) */
+.progress-bar-inner {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
+}
+
+/* Icon colours – just a quick helper (you can use any Tailwind colour class
+   and override it with these variables if you need) */
+.text-primary {
+  color: var(--color-primary);
+}
+.bg-primary {
+  background: var(--color-primary);
+}
+.border-primary {
+  border-color: var(--color-primary);
+}
+
+/* Example of using the primary colour for the bottom nav on mobile */
+.bottom-nav a.active {
+  color: var(--color-primary);
+}

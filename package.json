@@ -1,0 +1,24 @@
+{
+  "name": "tracy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,html,css,scss,md,json}\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "autoprefixer": "^10.5.0",
+    "postcss": "^8.5.12",
+    "prettier": "^3.8.3",
+    "tailwindcss": "^3.4.1"
+  },
+  "dependencies": {
+    "chart.js": "^4.5.1",
+    "graphify": "^1.0.0"
+  }
+}

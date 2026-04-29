@@ -1,0 +1,7 @@
+﻿{
+  // Use the local .prettierrc/.editorconfig if they exist
+  "prettier.useEditorConfig": true,
+
+  // IMPORTANT: Do NOT fall back to VS Code defaults – fail loudly if no config.
+  "prettier.requireConfig": true
+}
