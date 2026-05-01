@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ZapTrack - Attendance Dashboard</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
@@ -12,6 +13,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="theme.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 
   <style>
     :root {
@@ -23,7 +25,7 @@
       --card-bg: rgba(255, 255, 255, 0.05);
       --card-border: rgba(255, 255, 255, 0.1);
     }
-    
+
     body {
       font-family: 'Inter', sans-serif;
       background: #0f0f10;
@@ -48,22 +50,29 @@
     }
 
     @keyframes fade {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
-    
+
     .progress-bar {
       overflow: hidden;
       border-radius: 100px;
     }
-    
+
     .status-badge {
       padding: 4px 12px;
       border-radius: 100px;
       font-size: 12px;
       font-weight: 500;
     }
-    
+
     .nav-item {
       position: relative;
       padding: 12px 0;
@@ -74,11 +83,11 @@
       font-size: 12px;
       transition: all 0.2s ease;
     }
-    
+
     .nav-item.active {
       color: var(--primary);
     }
-    
+
     .nav-item.active::after {
       content: '';
       position: absolute;
@@ -88,26 +97,26 @@
       background: var(--primary);
       border-radius: 50%;
     }
-    
+
     .upload-area {
       transition: all 0.3s ease;
     }
-    
+
     .upload-area.dragover {
       border-color: var(--primary);
       background: rgba(99, 102, 241, 0.1);
     }
-    
+
     .class-item {
       transition: all 0.2s ease;
       border-left: 3px solid transparent;
     }
-    
+
     .class-item:hover {
       background: rgba(255, 255, 255, 0.03);
       border-left-color: var(--primary);
     }
-    
+
     /* Desktop sidebar */
     .sidebar {
       width: 260px;
@@ -119,42 +128,42 @@
       padding: 24px 16px;
       overflow-y: auto;
     }
-    
+
     .main-content {
       margin-left: 260px;
       padding: 24px;
       width: calc(100% - 260px);
     }
-    
+
     /* Mobile adjustments */
     @media (max-width: 1024px) {
       .sidebar {
         width: 220px;
       }
-      
+
       .main-content {
         margin-left: 220px;
         width: calc(100% - 220px);
       }
     }
-    
+
     @media (max-width: 768px) {
       .sidebar {
         transform: translateX(-100%);
         transition: transform 0.3s ease;
         z-index: 20;
       }
-      
+
       .sidebar.active {
         transform: translateX(0);
       }
-      
+
       .main-content {
         margin-left: 0;
         width: 100%;
         padding: 16px;
       }
-      
+
       .mobile-overlay {
         display: none;
         position: fixed;
@@ -165,27 +174,128 @@
         background: rgba(0, 0, 0, 0.5);
         z-index: 10;
       }
-     
-       .main-content {
-     padding-bottom: calc(80px + env(safe-area-inset-bottom));
+
+      .main-content {
+        padding-bottom: calc(80px + env(safe-area-inset-bottom));
       }
+
       .mobile-overlay.active {
         display: block;
       }
     }
-    body {
-  overflow-x: hidden;
- }
 
+    body {
+      overflow-x: hidden;
+    }
+
+    button {
+      background: #1e293b;
+      padding: 6px 10px;
+      border-radius: 8px;
+    }
+
+    .control-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #1e293b;
+      padding: 6px 10px;
+      border-radius: 12px;
+    }
+
+    .control-box span {
+      min-width: 30px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    .btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      border: none;
+      font-size: 18px;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+
+    /* minus */
+    .btn.minus {
+      background: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+    }
+
+    .btn.minus:hover {
+      background: rgba(239, 68, 68, 0.4);
+    }
+
+    /* plus */
+    .btn.plus {
+      background: rgba(34, 197, 94, 0.2);
+      color: #22c55e;
+    }
+
+    .btn.plus:hover {
+      background: rgba(34, 197, 94, 0.4);
+    }
+
+    /* reset */
+    .reset-btn {
+      background: #334155;
+      color: #fff;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      transition: 0.2s;
+    }
+
+    .reset-btn:hover {
+      background: #475569;
+    }
+
+    .sub-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 14px;
+      transition: 0.2s;
+    }
+
+    .sub-card:hover {
+      transform: translateY(-3px);
+    }
+
+    .sub-percent {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .safe {
+      color: #22c55e;
+    }
+
+    .warn {
+      color: #f59e0b;
+    }
+
+    .danger {
+      color: #ef4444;
+    }
+
+    .sub-small {
+      font-size: 12px;
+      color: #9ca3af;
+    }
   </style>
 </head>
 
 <body class="min-h-screen flex">
-  <html data-theme="mint">   <!-- teal / cyan -->
+  <html data-theme="mint"> <!-- teal / cyan -->
 
   <!-- Mobile overlay -->
   <div id="mobileOverlay" class="mobile-overlay"></div>
-  
+
   <!-- Sidebar (Desktop) -->
   <div class="sidebar bg-black/80 backdrop-blur">
     <div class="flex items-center gap-3 mb-8">
@@ -196,21 +306,23 @@
         Zap<span class="text-blue-400">Track</span>
       </h1>
     </div>
-    
+
     <div class="mb-8">
-      <div class="flex items-center gap-3 p-3 rounded-lg bg-gray-800">
-        <div class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center">
-          <i class="fas fa-user text-gray-300"></i>
+      <div class="card p-3 flex items-center gap-3">
+        <div
+          class="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-lg font-bold">
+          <span id="sideInitial">Z</span>
         </div>
-        <div>
-          <p class="text-sm font-medium">ZaP Student</p>
-          <p class="text-xs text-gray-400">Computer Science</p>
+        <div class="flex-1">
+          <p id="sideName" class="text-sm font-semibold">ZaP Student</p>
+          <p id="sideDept" class="text-xs text-gray-400">Computer Science</p>
         </div>
       </div>
     </div>
-    
+
     <nav class="space-y-2">
-      <a href="#" class="flex items-center gap-3 p-3 rounded-lg bg-blue-500/10 text-blue-400">
+      <a href="#" onclick="openDashboard()"
+        class="flex items-center gap-3 p-3 rounded-lg text-gray-400 hover:bg-gray-800 transition">
         <i class="fas fa-home w-5"></i>
         <span>Dashboard</span>
       </a>
@@ -222,12 +334,13 @@
         <i class="fas fa-calendar-alt w-5"></i>
         <span>Schedule</span>
       </a>
-      <a href="#" class="flex items-center gap-3 p-3 rounded-lg text-gray-400 hover:bg-gray-800 transition">
+      <a href="#" onclick="openSettings()"
+        class="flex items-center gap-3 p-3 rounded-lg text-gray-400 hover:bg-gray-800 transition">
         <i class="fas fa-cog w-5"></i>
         <span>Settings</span>
       </a>
     </nav>
-    
+
     <div class="mt-auto pt-8">
       <div class="card p-4">
         <p class="text-xs text-gray-400">Need help?</p>
@@ -238,57 +351,181 @@
       </div>
     </div>
   </div>
-  
+
   <!-- Main Content -->
   <div class="main-content pb-28">
     <!-- Header -->
+    <div id="dashboardContent">
     <div class="flex items-center justify-between mb-6">
+      <div>
+        <h1 class="text-2xl font-bold">Dashboard</h1>
+        <p class="text-sm text-gray-400 mt-1">
+          Welcome to ZapTrack! Here's your attendance summary.
+        </p>
+      </div>
 
-  <!-- LEFT (keep this) -->
-  <div>
-    <h1 class="text-2xl font-bold">Dashboard</h1>
-    <p class="text-sm text-gray-400 mt-1">
-      Welcome to ZapTrack! Here's your attendance summary.
-    </p>
-  </div>
+      <!-- RIGHT (clean controls) -->
+      <div class="flex items-center gap-3">
+        <!-- Reset -->
+        <button onclick="localStorage.clear(); location.reload()"
+          class="px-3 py-2 text-xs bg-blue-100/20 text-white-400 rounded-lg hover:bg-blue-500/30 transition">
+          Reset
+        </button>
+        <!-- Menu -->
+        <button id="menuToggle" class="md:hidden p-2 rounded-lg  text-gray-300 transition">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
 
-    <!-- RIGHT (clean controls) -->
-   <div class="flex items-center gap-3">
-   <!-- Reset -->
-    <button onclick="localStorage.clear(); location.reload()"
-      class="px-3 py-2 text-xs bg-blue-100/20 text-white-400 rounded-lg hover:bg-blue-500/30 transition">
-      Reset
-    </button>
-     <!-- Menu -->
-    <button id="menuToggle"
-      class="md:hidden p-2 rounded-lg  text-gray-300 transition">
-      <i class="fas fa-bars"></i>
-    </button>
+    </div>
 
-  </div>
+    <!-- Upload Reports -->
+    
+      <div class="card p-5 mb-6">
+        <h2 class="text-lg font-semibold mb-4">Upload Reports</h2>
 
-</div>
+        <input type="file" id="mainFileInput" class="hidden" accept=".xlsx,.xls">
 
-        <!-- Upload Reports -->
-        <div class="card p-5 mb-6">
-          <h2 class="text-lg font-semibold mb-4">Upload Reports</h2>
-          
-          <input type="file" id="fileInput" class="hidden" accept=".xlsx,.xls,image/*" />
-          
-          <div id="uploadBox" class="upload-area border-2 border-dashed border-gray-700 rounded-2xl p-6 text-center cursor-pointer transition mb-4">
-            <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-blue-500/10 flex items-center justify-center">
-              <i class="fas fa-cloud-upload-alt text-blue-400 text-xl"></i>
-            </div>
-            <p class="text-sm font-medium text-gray-300">Upload Attendance Report</p>
-            <p class="text-xs text-gray-500 mt-1">Supported: Excel files or screenshots</p>
+        <div id="uploadBox"
+          class="upload-area border-2 border-dashed border-gray-700 rounded-2xl p-6 text-center cursor-pointer transition mb-4">
+          <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-blue-500/10 flex items-center justify-center">
+            <i class="fas fa-cloud-upload-alt text-blue-400 text-xl"></i>
           </div>
-          
-          <p id="fileName" class="text-xs text-gray-500 mt-3 text-center"></p>
-          
+          <p class="text-sm font-medium text-gray-300">Upload Attendance Report</p>
+          <p class="text-xs text-gray-500 mt-1">Supported: Excel files</p>
+        </div>
+
+        <p id="fileName" class="text-xs text-gray-500 mt-3 text-center"></p>
+
+        <div class="mt-6">
+          <h2 class="text-lg font-semibold mb-4">Attendance Details</h2>
+
+          <div class="card p-4 overflow-x-auto">
+            <table class="w-full text-sm text-left">
+              <thead class="text-gray-400 border-b border-gray-800">
+                <tr>
+                  <th class="py-2">Subject</th>
+                  <th class="py-2">AH+DL</th>
+                  <th class="py-2">TH &nbsp&nbsp</th>
+                  <th class="py-2">Total%</th>
+                </tr>
+              </thead>
+              <tbody id="subjectTable"></tbody>
+            </table>
+          </div>
+        </div><br>
+
+        <!-- Stats Grid -->
+        <div id="topStats">
+          <div id="overviewCards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+            <div class="card p-5">
+              <div class="flex justify-between items-start">
+                <div>
+                  <p class="text-sm text-gray-400">Overall Attendance</p>
+                  <h2 id="overallPercent" class="text-3xl font-bold mt-2">--%</h2>
+                </div>
+                <div class="w-12 h-12 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                  <i class="fas fa-target text-blue-400"></i>
+                </div>
+              </div>
+              <div class="mt-4">
+                <div class="progress-bar h-2 bg-gray-800 rounded-full">
+                  <div id="progressBar" class="h-full bg-blue-500 rounded-full" style="width: 0%"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card p-5">
+              <div class="flex justify-between items-start">
+                <div>
+                  <p class="text-sm text-gray-400">Present</p>
+                  <h2 id="presentCount" class="text-3xl font-bold mt-2 text-green-400">--</h2>
+                </div>
+                <div class="w-12 h-12 rounded-lg bg-green-500/10 flex items-center justify-center">
+                  <i class="fas fa-check text-green-400"></i>
+                </div>
+              </div>
+            </div>
+
+            <div class="card p-5">
+              <div class="flex justify-between items-start">
+                <div>
+                  <p class="text-sm text-gray-400">Absent</p>
+                  <h2 id="absentCount" class="text-3xl font-bold mt-2 text-red-400">--</h2>
+                </div>
+                <div class="w-12 h-12 rounded-lg bg-red-500/10 flex items-center justify-center">
+                  <i class="fas fa-times text-red-400"></i>
+                </div>
+              </div>
+            </div>
+
+            <div class="card p-5">
+              <div class="flex justify-between items-start items-center">
+                <div>
+                  <p class="text-sm text-gray-400">Status</p>
+                  <h2 id="status" class="text-5xl font-extrabold mt-2 text-green-400 tracking-wide">--</h2>
+                </div>
+                <div class="w-12 h-12 rounded-lg bg-purple-500/10 flex items-center justify-center">
+                  <i class="fas fa-shield-alt text-purple-400"></i>
+                </div>
+              </div>
+              <p class="text-xs text-gray-400 mt-4">Above minimum requirement</p>
+            </div>
+          </div>
+
+          <h2 class="text-lg font-semibold mb-4">Manual Calculator</h2>
+          <div class="card p-5 mt-6">
+            <!-- MAIN LAYOUT -->
+            <div class="flex gap-6">
+              <!-- LEFT: CONTROLS -->
+              <div class="w-56 flex flex-col gap-4">
+                <!-- SUBJECT -->
+                <select id="calcSubject" class="bg-gray-800 px-3 py-2 rounded-lg text-sm w-full">
+                  <option value="">Select Subject</option>
+                </select><br>
+                <!-- TOTAL -->
+                <div class="control-box justify-between">
+                  <p class="text-sm text-gray-400">Total &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp </p>
+                  <button class="btn minus" onclick="updateCalc('total', -1)">−</button>
+                  <span id="totalVal">--</span>
+                  <button class="btn plus" onclick="updateCalc('total', 1)">+</button>
+                </div>
+                <!-- ATTENDED -->
+                <div class="control-box justify-between">
+                  <p class="text-sm text-gray-400">Attended</p>
+                  <button class="btn minus" onclick="updateCalc('attended', -1)">−</button>
+                  <span id="attendedVal">--</span>
+                  <button class="btn plus" onclick="updateCalc('attended', 1)">+</button>
+                </div>
+                <!-- RESET -->
+                <button class="reset-btn w-full" onclick="resetCalc()">Reset</button>
+              </div>
+              <!-- LEFT: GRAPH AREA -->
+              <div class="flex-1">
+                <!-- TOP: % -->
+                <div class="flex justify-end mb-2">
+                  <div class="text-left">
+                    <h1 id="calcPercent" class="text-3xl font-bold">--%</h1>
+                    <p id="calcStatus" class="text-xs"></p>
+                  </div>
+                </div>
+                <!-- GRAPH -->
+                <div class="h-56">
+                  <canvas id="calcChart"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br><br>
+        <div id="statsSection">
+          <h1 class="text-3xl font-bold mb-4">Stats</h1>
+
           <div class="mt-6">
             <label class="text-xs text-gray-400 block mb-2">Select Class</label>
             <div class="relative">
-              <select id="classSelect" class="w-full bg-gray-800 border border-gray-700 rounded-xl p-3 text-sm appearance-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+              <select id="classSelect"
+                class="w-full bg-gray-800 border border-gray-700 rounded-xl p-3 text-sm appearance-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
                 <option value="">Choose Class</option>
                 <option value="4CSD01">4CSD01</option>
                 <option value="4CSD02">4CSD02</option>
@@ -298,175 +535,169 @@
                 <i class="fas fa-chevron-down text-xs"></i>
               </div>
             </div>
-          </div>
-        
-   <div class="mt-6">
-   <h2 class="text-lg font-semibold mb-4">Attendance Details</h2>
+          </div><br>
+          <div id="ttContainer" class="mt-6"></div>
 
-   <div class="card p-4 overflow-x-auto">
-    <table class="w-full text-sm text-left">
-      <thead class="text-gray-400 border-b border-gray-800">
-        <tr>
-          <th class="py-2">Subject</th>
-          <th class="py-2">AH+DL</th>
-          <th class="py-2">TH &nbsp&nbsp</th>
-          <th class="py-2">Total%</th>
-        </tr>
-      </thead>
-      <tbody id="subjectTable"></tbody>
-    </table>
-  </div>
-</div>
+        <button id="saveTT" class="w-full bg-green-500/20 text-green-400 py-2 rounded-xl text-sm">
+          Save Changes</button>
+          <button id="resetTT" class="w-full bg-red-500/20 text-red-400 py-2 rounded-xl text-sm">
+            Reset Changes
+          </button>
+          <br><br>
+          <div class="flex gap-2 mb-4">
+            <button id="editWeek1" class="flex-1 bg-blue-500/20 text-blue-400 py-2 rounded-xl text-sm">
+              Edit Week 1
+            </button>
+            <button id="editWeek2" class="flex-1 bg-purple-500/20 text-purple-400 py-2 rounded-xl text-sm">
+              Edit Week 2
+            </button>
+          </div>
 
-<div id="ttContainer" class="mt-6"></div>
+          <div class="grid md:grid-cols-2 gap-4 mt-6">
+          
+            <!-- Week 1 -->
+            <div class="card p-4 overflow-x-auto">
+              <h2 class="text-lg font-semibold mb-3">Week 1 Prediction</h2>
+              <table class="w-full text-sm text-left">
+                <thead class="text-gray-400 border-b border-gray-800">
+                  <tr>
+                    <th>Subject</th>
+                    <th>+Cls</th>
+                    <th>Present</th>
+                    <th>Total</th>
+                    <th>%</th>
+                  </tr>
+                </thead>
+                <tbody id="subjectPredictionTable"></tbody>
+              </table>
+            </div>
+          
+            <!-- Week 2 -->
+            <div class="card p-4 overflow-x-auto">
+              <h2 class="text-lg font-semibold mb-3">Week 2 Prediction</h2>
+              <table class="w-full text-sm text-left">
+                <thead class="text-gray-400 border-b border-gray-800">
+                  <tr>
+                    <th>Subject</th>
+                    <th>+Cls</th>
+                    <th>Present</th>
+                    <th>Total</th>
+                    <th>%</th>
+                  </tr>
+                </thead>
+                <tbody id="subjectPredictionTable2"></tbody>
+              </table>
+            </div>
+          
+          </div>
 
+        <div class="mt-6">
+          <h2 class="text-lg font-semibold mb-4">Attendance Growth</h2>
 
-    <!-- Stats Grid -->
-     <div id="topStats">
-    <div id="overviewCards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
-      <div class="card p-5">
-        <div class="flex justify-between items-start">
-          <div>
-            <p class="text-sm text-gray-400">Overall Attendance</p>
-            <h2 id="overallPercent" class="text-3xl font-bold mt-2">--%</h2>
-          </div>
-          <div class="w-12 h-12 rounded-lg bg-blue-500/10 flex items-center justify-center">
-            <i class="fas fa-target text-blue-400"></i>
+          <div class="h-64 md:h-80">
+            <canvas id="attendanceChart"></canvas>
           </div>
         </div>
-        <div class="mt-4">
-          <div class="progress-bar h-2 bg-gray-800 rounded-full">
-            <div id="progressBar" class="h-full bg-blue-500 rounded-full" style="width: 0%"></div>
+
+        <div class="mt-6">
+          <h2 class="text-lg font-semibold mb-4">Subject Summary</h2>
+          <div id="subjectCards" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           </div>
         </div>
-      </div>
-      
-      <div class="card p-5">
-        <div class="flex justify-between items-start">
-          <div>
-            <p class="text-sm text-gray-400">Present</p>
-            <h2 id="presentCount" class="text-3xl font-bold mt-2 text-green-400">--</h2>
+
+        <input type="file" id="dailyFileInput" class="hidden" accept=".xlsx,.xls">
+        <div id="dailyUploadBox"
+          class="upload-area border-2 border-dashed border-gray-700 rounded-2xl p-6 text-center cursor-pointer transition mb-4">
+          <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-blue-500/10 flex items-center justify-center">
+            <i class="fas fa-cloud-upload-alt text-blue-400 text-xl"></i>
           </div>
-          <div class="w-12 h-12 rounded-lg bg-green-500/10 flex items-center justify-center">
-            <i class="fas fa-check text-green-400"></i>
+          <p class="text-sm font-medium text-gray-300">Upload Daily Attendance Report</p>
+          <p class="text-xs text-gray-500 mt-1">Supported: Excel files</p>
+        </div>
+        <div class="mt-6">
+          <h2 class="text-lg font-semibold mb-4">Daily Attendance Analysis</h2>
+
+          <div class="h-64 md:h-80">
+            <canvas id="dailyChart"></canvas>
           </div>
         </div>
-          </div>
-      
-      <div class="card p-5">
-        <div class="flex justify-between items-start">
-          <div>
-            <p class="text-sm text-gray-400">Absent</p>
-            <h2 id="absentCount" class="text-3xl font-bold mt-2 text-red-400">--</h2>
-          </div>
-          <div class="w-12 h-12 rounded-lg bg-red-500/10 flex items-center justify-center">
-            <i class="fas fa-times text-red-400"></i>
-          </div>
-        </div>
-      </div>
-      
-      <div class="card p-5">
-        <div class="flex justify-between items-start items-center">
-          <div>
-            <p class="text-sm text-gray-400">Status</p>
-            <h2 id="status" class="text-5xl font-extrabold mt-2 text-green-400 tracking-wide">--</h2>
-          </div>
-          <div class="w-12 h-12 rounded-lg bg-purple-500/10 flex items-center justify-center">
-            <i class="fas fa-shield-alt text-purple-400"></i>
-          </div>
-        </div>
-        <p class="text-xs text-gray-400 mt-4">Above minimum requirement</p>
       </div>
     </div>
-
-<div id="statsSection">
-   <h2 class="text-xl font-bold mb-4">Stats</h2>
-
-   <div class="flex gap-2 mb-4">
-  <button id="editWeek1" class="flex-1 bg-blue-500/20 text-blue-400 py-2 rounded-xl text-sm">
-    Edit Week 1
-  </button>
-  <button id="editWeek2" class="flex-1 bg-purple-500/20 text-purple-400 py-2 rounded-xl text-sm">
-    Edit Week 2
-  </button>
-</div>
-
-   <div class="mt-6">
-   <h2 class="text-lg font-semibold mb-4">Next Week Attendence</h2>
-
-   <div class="card p-4 overflow-x-auto">
-    <table class="w-full text-sm text-left">
-      <thead class="text-gray-400 border-b border-gray-800">
-        <tr>
-          <th>Subject</th>
-          <th>Present</th>
-          <th>Total</th>
-          <th>%</th>
-        </tr>
-      </thead>
-      <tbody id="subjectPredictionTable"></tbody>
-    </table>
-   </div>
-   </div>
-   </div>
-<div class="mt-6">
-  <h2 class="text-lg font-semibold mb-4">2 Week Prediction</h2>
-
-  <div class="card p-4 overflow-x-auto">
-    <table class="w-full text-sm text-left">
-      <thead class="text-gray-400 border-b border-gray-800">
-        <tr>
-          <th>Subject</th>
-          <th>Present</th>
-          <th>Total</th>
-          <th>%</th>
-        </tr>
-      </thead>
-      <tbody id="subjectPredictionTable2"></tbody>
-    </table>
-  </div>
-</div>
-
-<div class="mt-6">
-  <h2 class="text-lg font-semibold mb-4">Attendance Growth</h2>
-
-  <div class="h-64 md:h-80">
-    <canvas id="attendanceChart"></canvas>
-  </div>
-</div>
-
-
-  <script>
-    // Set current date
-    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-    const today = new Date();
-    const dateString = `${days[today.getDay()]}, ${months[today.getMonth()]} ${today.getDate()}, ${today.getFullYear()}`;
-    const dateEl = document.getElementById('currentDate');
-   if (dateEl) {
-    dateEl.textContent = dateString;
-   }
+    <div id="settingsPanel" class="hidden">
     
-    // Mobile menu toggle
-   const menuToggle = document.getElementById('menuToggle');
-   const mobileOverlay = document.getElementById('mobileOverlay');
-   const sidebar = document.querySelector('.sidebar');
+      <h1 class="text-2xl font-bold mb-6">Profile Overview</h1>
+     
+      <div class="grid md:grid-cols-3 gap-6">
+    
+        <!-- LEFT PROFILE CARD -->
+        <div class="card p-6 flex flex-col items-center text-center">
+          <div
+            class="w-20 h-20 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-2xl font-bold mb-4">
+            <span id="profileInitial">--</span>
+          </div>
+    
+          <h2 id="profileName" class="text-lg font-semibold">--</h2>
+          <p id="profileDept" class="text-sm text-gray-400">--</p>
+    
+          <div class="mt-4 w-full text-left text-sm space-y-1">
+            <p><b>Roll:</b> <span id="profileRoll">--</span></p>
+          </div>
+        </div>
+    
+        <!-- RIGHT STATS -->
+        <div class="md:col-span-2 grid grid-cols-2 gap-4">
+    
+          <div class="card p-5">
+            <p class="text-xs text-gray-400">Batch</p>
+            <h2 id="profileBatch" class="text-xl font-bold mt-1">--</h2>
+          </div>
+    
+          <div class="card p-5">
+            <p class="text-xs text-gray-400">Term</p>
+            <h2 id="profileTerm" class="text-xl font-bold mt-1">--</h2>
+          </div>
+    
+          <div class="card p-5 col-span-2">
+            <p class="text-xs text-gray-400">Department</p>
+            <h2 id="profileDeptBig" class="text-xl font-bold mt-1">--</h2>
+          </div>
+    
+        </div>
+    
+      </div>
+    </div>
+    <script>
+      // Set current date
+      const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      const today = new Date();
+      const dateString = `${days[today.getDay()]}, ${months[today.getMonth()]} ${today.getDate()}, ${today.getFullYear()}`;
+      const dateEl = document.getElementById('currentDate');
+      if (dateEl) {
+        dateEl.textContent = dateString;
+      }
 
-   if (menuToggle) {
-   menuToggle.addEventListener('click', () => {
-    sidebar.classList.toggle('active');
-    mobileOverlay.classList.toggle('active');
-    });
-   }
+      // Mobile menu toggle
+      const menuToggle = document.getElementById('menuToggle');
+      const mobileOverlay = document.getElementById('mobileOverlay');
+      const sidebar = document.querySelector('.sidebar');
 
-   if (mobileOverlay) {
-   mobileOverlay.addEventListener('click', () => {
-    sidebar.classList.remove('active');
-    mobileOverlay.classList.remove('active');
-  });
-}
-  
-</script>
-<script src="main.js"></script>
+      if (menuToggle) {
+        menuToggle.addEventListener('click', () => {
+          sidebar.classList.toggle('active');
+          mobileOverlay.classList.toggle('active');
+        });
+      }
+
+      if (mobileOverlay) {
+        mobileOverlay.addEventListener('click', () => {
+          sidebar.classList.remove('active');
+          mobileOverlay.classList.remove('active');
+        });
+      }
+
+    </script>
+    <script src="main.js"></script>
 </body>
+
 </html>
